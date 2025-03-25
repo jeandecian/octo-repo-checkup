@@ -29,6 +29,22 @@ def get_remote_url(repo_path):
         return None
 
 
+def get_github_api_url(remote_url):
+    if remote_url is None:
+        return False
+
+    GITHUB_URL = "github.com"
+
+    if GITHUB_URL not in remote_url:
+        return False
+
+    owner, repo = (
+        remote_url.split(GITHUB_URL)[1].lstrip(":/").removesuffix(".git").split("/")
+    )
+
+    return f"https://api.github.com/repos/{owner}/{repo}"
+
+
 workspace_path = sys.argv[1]
 local_repos = get_local_repos(workspace_path)
 
@@ -38,4 +54,6 @@ print("Repositories:")
 for repo in local_repos:
     print(" *", repo.removeprefix(workspace_path + "/"))
     print("   * Path:", repo)
-    print("   * Remote URL:", get_remote_url(repo))
+    remote_url = get_remote_url(repo)
+    print("   * Remote URL:", remote_url)
+    print("   * GitHub API URL:", get_github_api_url(remote_url))
