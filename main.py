@@ -3,10 +3,10 @@ import subprocess
 import sys
 
 
-def get_local_repos():
+def get_local_repos(workspace_path):
     repos = []
 
-    for root, dirs, files in os.walk(sys.argv[1]):
+    for root, dirs, files in os.walk(workspace_path):
         if ".git" in dirs:
             repos.append(root)
             dirs.remove(".git")
@@ -29,11 +29,13 @@ def get_remote_url(repo_path):
         return None
 
 
-local_repos = get_local_repos()
+workspace_path = sys.argv[1]
+local_repos = get_local_repos(workspace_path)
 
 print("Local repositories found:", len(local_repos))
 
 print("Repositories:")
 for repo in local_repos:
-    print(" *", repo)
+    print(" *", repo.removeprefix(workspace_path + "/"))
+    print("   * Path:", repo)
     print("   * Remote URL:", get_remote_url(repo))
