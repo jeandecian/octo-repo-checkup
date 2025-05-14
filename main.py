@@ -1,4 +1,5 @@
 import os
+import requests
 import subprocess
 import sys
 
@@ -45,6 +46,12 @@ def get_github_repo_owner(remote_url):
     return owner
 
 
+def get_repos_from_owner(owner):
+    response = requests.get(f"https://api.github.com/users/{owner}/repos").json()
+
+    return response
+
+
 workspace_path = sys.argv[1]
 local_repos = get_local_repos(workspace_path)
 
@@ -62,6 +69,6 @@ for repo in local_repos:
     print("   * GitHub owner:", owner)
 
     if owner not in owners:
-        owners[owner] = []
+        owners[owner] = get_repos_from_owner(owner)
 
 print(owners)
